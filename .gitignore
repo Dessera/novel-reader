@@ -12,3 +12,5 @@ wheels/
 .envrc
 result
 result-*
+
+.vscode
