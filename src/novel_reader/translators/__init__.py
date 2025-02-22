@@ -44,4 +44,4 @@ class TranslatorFactory:
 
     @property
     def translators(self):
-        return self._trans.values()
+        return self._trans

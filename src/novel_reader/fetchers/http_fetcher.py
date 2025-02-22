@@ -1,5 +1,6 @@
-from typing import Dict, Optional
 import requests
+from pydantic import Field
+from typing import Annotated, Dict, Optional
 
 from .base_fetcher import BaseFetcher
 
@@ -10,20 +11,19 @@ class HttpFetcher(BaseFetcher):
     IDENTIFIER = "http"
 
     class Config(BaseFetcher.Config):
-        http_proxy: Optional[str] = None
-        https_proxy: Optional[str] = None
-
-    def __init__(self, cfg: Config):
-        super().__init__(cfg)
-        self._http_proxy = cfg.http_proxy
-        self._https_proxy = cfg.https_proxy
+        http_proxy: Annotated[
+            Optional[str], Field(description="HTTP proxy address")
+        ] = None
+        https_proxy: Annotated[
+            Optional[str], Field(description="HTTPS proxy address")
+        ] = None
 
     def _build_proxies(self):
         proxies: Dict[str, str] = {}
-        if self._http_proxy is not None:
-            proxies["http"] = self._http_proxy
-        if self._https_proxy is not None:
-            proxies["https"] = self._https_proxy
+        if self.params["http_proxy"] is not None:
+            proxies["http"] = self.params["http_proxy"]
+        if self.params["https_proxy"] is not None:
+            proxies["https"] = self.params["https_proxy"]
         return proxies
 
     def _build_headers(self):

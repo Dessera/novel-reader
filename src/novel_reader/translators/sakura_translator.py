@@ -1,4 +1,6 @@
 import ollama
+from pydantic import Field
+from typing import Annotated
 from .base_translator import BaseTranslator
 
 
@@ -6,11 +8,13 @@ class SakuraTranslator(BaseTranslator):
     IDENTIFIER = "sakura"
 
     class Config(BaseTranslator.Config):
-        pass
+        client_url: Annotated[str, Field(description="ollama client url")] = (
+            "http://localhost:11434"
+        )
 
     def __init__(self, cfg: Config) -> None:
         super().__init__(cfg)
-        self._client = ollama.Client("http://localhost:11434")
+        self._client = ollama.Client(cfg.client_url)
 
     def _build_prompt(self, text: str) -> str:
         user_prompt = (

@@ -42,4 +42,4 @@ class FetcherFactory:
 
     @property
     def fetchers(self):
-        return self._fetchers.values()
+        return self._fetchers

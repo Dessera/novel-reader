@@ -9,12 +9,6 @@ from ..novel import NovelDocument
 class NcodeSyosetuFetcher(HttpFetcher):
     IDENTIFIER = "ncode_syosetu"
 
-    class Config(HttpFetcher.Config):
-        pass
-
-    def __init__(self, cfg: Config):
-        super().__init__(cfg)
-
     def fetch(self, url: str):
         content = "".join(super().fetch(url).sections)
         soup = BeautifulSoup(content, "html.parser")

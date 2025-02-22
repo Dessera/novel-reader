@@ -1,11 +1,3 @@
-# Standard Python development environment with poetry2nix
+# NovelReader
 
-## Usage
-
-use copier:
-
-```shell
-copier copy gh:Dessera/python-template <path/to/your/project> 
-```
-
-Enjoy :)
+The project aims to fetch novels from various websites and translate them by various translators.
