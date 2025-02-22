@@ -1,0 +1,19 @@
+[project]
+name = "novel-reader"
+version = "0.0.1"
+authors = [
+  { name="Dessera", email="dessera@qq.com" }
+]
+description = "Automatic translator for light novels"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+]
