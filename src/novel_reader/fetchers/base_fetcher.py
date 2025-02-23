@@ -5,18 +5,21 @@ from ..novel import NovelDocument, NovelMeta, Novel
 
 
 class BaseFetcher(ParamsObject):
+    class Meta(ParamsObject.Meta):
+        name = "fetcher"
+
     @abstractmethod
-    def fetch(self, _url: str) -> NovelDocument:
+    def fetch(self, src: str) -> NovelDocument:
         raise NotImplementedError
 
     @abstractmethod
-    def search(self, _url: str) -> List[str]:
+    def search(self, src: str) -> List[str]:
         raise NotImplementedError
 
     @abstractmethod
-    def fetch_meta(self, _url: str) -> NovelMeta:
+    def fetch_meta(self, src: str) -> NovelMeta:
         raise NotImplementedError
 
     @abstractmethod
-    def fetch_all(self, _url: str) -> Novel:
+    def fetch_all(self, src: str) -> Novel:
         raise NotImplementedError

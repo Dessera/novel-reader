@@ -34,6 +34,8 @@ def inspect_module[T: ParamsObject](factory: ParamsObjectFactory[T], identifier:
 def print_meta(obj: Type[ParamsObject]):
     print("module:")
     print(f"    name: {obj.Meta.identifier}")
+    print(f"    type: {obj.Meta.name}")
+    print(f"    description: {obj.Meta.description}")
 
 
 def print_fields(fields: Dict[str, FieldInfo]):

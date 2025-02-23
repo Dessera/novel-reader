@@ -2,8 +2,10 @@ from abc import ABCMeta
 import importlib
 import importlib.util
 import inspect
-from typing import Dict, List, Optional, Type
+from typing import Dict, List, Optional, Tuple, Type
 from pydantic import BaseModel
+
+from ..exceptions import ModuleSearchException, ObjectCreationException
 
 
 class ParamsObject(metaclass=ABCMeta):
@@ -11,7 +13,9 @@ class ParamsObject(metaclass=ABCMeta):
         pass
 
     class Meta:
+        name = "object"
         identifier = "base"
+        description = ""
 
     def __init__(self, cfg: Config):
         self._cfg = cfg
@@ -35,24 +39,39 @@ class _ParamsObjectFactory[T: Type[ParamsObject], IST: ParamsObject](metaclass=A
         for mod in self._top_mods:
             self._objs.update(self._list_modules(mod, package))
 
-    def create(self, identifier: str, params: str) -> IST:
+    def create_or_none(self, identifier: str, params: str) -> Optional[IST]:
         obj = self.get_object(identifier)
         if obj is None:
-            raise ValueError(f"Unknown module identifier: {identifier}")
+            return None
         cfg = obj.Config.model_validate_json(params)
         return obj(cfg)  # type: ignore
 
-    def _list_modules(self, mod: str, package: Optional[str] = None):
-        module = importlib.import_module(mod, package=package)
-        return map(
-            lambda obj: (obj[1].Meta.identifier, obj[1]),
-            filter(
-                lambda obj: inspect.isclass(obj[1])
-                and issubclass(obj[1], self._ptype)
-                and obj[1] is not self._ptype,
-                inspect.getmembers(module),
-            ),
-        )
+    def create(self, identifier: str, params: str) -> IST:
+        obj = self.create_or_none(identifier, params)
+        if obj is None:
+            raise ObjectCreationException(
+                self._ptype.Meta.name, identifier, "No such object"
+            )
+        return obj
+
+    def _list_modules(
+        self, mod: str, package: Optional[str] = None
+    ) -> List[Tuple[str, T]]:
+        try:
+            module = importlib.import_module(mod, package=package)
+            return list(
+                map(
+                    lambda obj: (obj[1].Meta.identifier, obj[1]),
+                    inspect.getmembers(
+                        module,
+                        lambda obj: inspect.isclass(obj)
+                        and issubclass(obj, self._ptype)
+                        and obj is not self._ptype,
+                    ),
+                )
+            )
+        except Exception as e:
+            raise ModuleSearchException(mod, package, str(e))
 
     def get_object(self, identifier: str):
         return self._objs.get(identifier)
