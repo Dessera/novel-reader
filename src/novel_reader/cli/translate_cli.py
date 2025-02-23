@@ -2,8 +2,7 @@ from typing import Annotated, Optional
 from typer import Typer, Option
 from tqdm import tqdm
 
-from ..translators import TranslatorFactory
-from ..fetchers import FetcherFactory
+from ..utils.factories import TranslatorFactory, FetcherFactory
 
 subcommand = Typer(name="translate", help="Translate novels")
 
@@ -24,12 +23,10 @@ def single(
 ):
     try:
         fetcher_factory = FetcherFactory()
-        fetcher = fetcher_factory.create_fetcher(source_type, source_params)
+        fetcher = fetcher_factory.create(source_type, source_params)
 
         translator_factory = TranslatorFactory()
-        translator = translator_factory.create_translator(
-            translator_type, translator_params
-        )
+        translator = translator_factory.create(translator_type, translator_params)
 
         doc = fetcher.fetch(source)
 

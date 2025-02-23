@@ -5,7 +5,8 @@ from .base_translator import BaseTranslator
 
 
 class SakuraTranslator(BaseTranslator):
-    IDENTIFIER = "sakura"
+    class Meta(BaseTranslator.Meta):
+        identifier = "sakura"
 
     class Config(BaseTranslator.Config):
         client_url: Annotated[str, Field(description="ollama client url")] = (

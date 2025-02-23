@@ -8,7 +8,8 @@ from ..novel import NovelDocument
 
 
 class HttpFetcher(BaseFetcher):
-    IDENTIFIER = "http"
+    class Meta(BaseFetcher.Meta):
+        identifier = "http"
 
     class Config(BaseFetcher.Config):
         http_proxy: Annotated[

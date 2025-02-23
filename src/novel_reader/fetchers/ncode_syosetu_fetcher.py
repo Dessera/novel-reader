@@ -7,7 +7,8 @@ from ..novel import NovelDocument
 
 
 class NcodeSyosetuFetcher(HttpFetcher):
-    IDENTIFIER = "ncode_syosetu"
+    class Meta(HttpFetcher.Meta):
+        identifier = "ncode_syosetu"
 
     def fetch(self, url: str):
         content = "".join(super().fetch(url).sections)
